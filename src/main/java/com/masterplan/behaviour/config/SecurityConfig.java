@@ -51,16 +51,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                     .csrf(csrf -> csrf.disable())
-                    .authorizeRequests(auth -> auth
-                            .requestMatchers("/token", "/register").permitAll()
-                            .anyRequest().authenticated()
+                    .authorizeHttpRequests(auth ->auth
+                                .requestMatchers("/token","/register").permitAll()
+                                .anyRequest()
+                                .authenticated()
                     )
-                    .exceptionHandling(exceptionHandling -> 
-                        exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint))
-                    .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    )
+                    .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt())
+                    .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    )
                     .httpBasic(withDefaults())
                     .build();
+
     }
 
     @Bean
