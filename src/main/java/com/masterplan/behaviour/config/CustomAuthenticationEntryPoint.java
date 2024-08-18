@@ -23,7 +23,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         // Prepare custom JSON response
         Map<String, Object> data = new HashMap<>();
         data.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        data.put("message", "Unauthorized: Access is denied");
+        data.put("message", "Wrong Password or Username! Please try again.");
         data.put("error", authException.getMessage());
         
         // Write JSON response
