@@ -57,6 +57,10 @@ public class HomeController {
 
         // Set the role (you can modify this depending on your needs)
         user.setRole("owner");  // Default role
+        user.setFirstname(user.getFirstname());
+        user.setLastname(user.getLastname());
+        user.setBorn(user.getBorn());
+        user.setGender(user.getGender());
 
         // Save the user
         userRepository.save(user);
