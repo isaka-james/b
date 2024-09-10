@@ -2,27 +2,35 @@ package com.masterplan.behaviour.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.masterplan.behaviour.model.User;
+import com.masterplan.behaviour.repository.UserRepository;
 import com.masterplan.behaviour.response.APIResponse;
 import com.masterplan.behaviour.service.TokenService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
 public class AuthController {
 
-    private final TokenService tokenService;
-
     private static final Logger LOG=LoggerFactory.getLogger(AuthController.class);
     
-    public AuthController(TokenService tokenService){
-        this.tokenService=tokenService;
-    }
+    @Autowired 
+    private UserRepository userRepository;
+
+    @Autowired 
+    private TokenService tokenService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/token")
     public ResponseEntity<APIResponse> token(Authentication authentication) {
@@ -36,7 +44,6 @@ public class AuthController {
             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
         
-        //LOG.debug("Token request for the user: {}",authentication.getName());
 
         String token = tokenService.generateToken(authentication);
         LOG.debug("Token Granted: {}", token);
@@ -46,6 +53,39 @@ public class AuthController {
             token
         );
         return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<APIResponse>  registerUser(@RequestBody User user) {
+        // Check if the username already exists
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            APIResponse responseIsPresent = new APIResponse(
+                HttpStatus.CONFLICT.value(), 
+                "Username is already Present!", 
+                null
+            );
+            return new ResponseEntity<>(responseIsPresent,HttpStatus.CONFLICT);
+        }
+
+        // Encrypt the password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Set the role (you can modify this depending on your needs)
+        user.setRole("owner");  // Default role
+        user.setFirstname(user.getFirstname());
+        user.setLastname(user.getLastname());
+        user.setBorn(user.getBorn());
+        user.setGender(user.getGender());
+
+        // Save the user
+        userRepository.save(user);
+
+        APIResponse responseSuccessful = new APIResponse(
+            HttpStatus.OK.value(), 
+            "Username is successfully Created!", 
+            null
+        );
+        return new ResponseEntity<>(responseSuccessful,HttpStatus.OK);
     }
     
 }
