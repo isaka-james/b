@@ -60,4 +60,20 @@ public class TransactionController {
 
         return ResponseEntity.ok(new APIResponse(200, "Transaction recorded successfully", financial));
     }
+
+    @GetMapping("/get-balance")
+    public ResponseEntity<APIResponse> getBalance(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = tokenService.getUsernameFromToken(token);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new APIResponse(400, "User not found", null));
+        }
+        User user = userOptional.get();
+
+        // Calculate balance
+        double balance = financialRepository.getBalanceByUserId(user.getId());
+
+        return ResponseEntity.ok(new APIResponse(200, "Balance fetched successfully", balance));
+    }
 }
