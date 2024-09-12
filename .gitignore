@@ -35,3 +35,6 @@ build/
 
 ### PROTECT THE CERTIFICATES ######
 /src/main/resources/certs/
+
+## Ignore my pictures
+/src/main/resources/static/images/
