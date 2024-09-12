@@ -8,6 +8,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -18,50 +19,64 @@ public class User {
 
     @Id
     @Column("id")
+    @JsonProperty("id")
     private Integer id;
 
     @Column("username")
     @NotEmpty(message = "Username is required")
     @Size(min = 4, max = 50, message = "Username must be between 4 and 50 characters")
+    @JsonProperty("username")
     private String username;
 
     @Column("password")
     @NotEmpty(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     @JsonIgnore
+    @JsonProperty("password")
     private String password;
 
     @Column("role")
+    @JsonProperty("role")
     private String role;
 
     @Column("last_login")
+    @JsonProperty("last_login")
     private LocalDateTime lastLogin; 
 
     @Column("photo")
+    @JsonProperty("photo")
     private String photo;
 
     @Column("born")
+    @JsonProperty("born")
     private LocalDate born; 
 
     @Column("first_name")
+    @JsonProperty("first_name")
     private String firstName;
 
     @Column("middle_name")
+    @JsonProperty("middle_name")
     private String middleName;
 
     @Column("last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
     @Column("gender")
+    @JsonProperty("gender")
     private String gender;
 
     @Column("email")
+    @JsonProperty("email")
     private String email;
 
     @Column("nida")
+    @JsonProperty("nida")
     private String nida;
 
     @Column("phone_number")
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
 
@@ -87,26 +102,16 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    // Getters and setters
-    public Integer getId() {
-        return id;
-    }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
+
 
     public void setPassword(String password) {
         this.password = password;
@@ -115,11 +120,6 @@ public class User {
 
     public void setLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
-    }
-
-
-    public String getUserRole(){
-        return role;
     }
 
     public void setRole(String role){
@@ -148,23 +148,60 @@ public class User {
     }
 
     // Getters
-    public String getFirstname(){
+    @JsonProperty("firstname")
+    public String getFirstname() {
         return this.firstName;
     }
-    public String getMiddlename(){
+
+    @JsonProperty("middlename")
+    public String getMiddlename() {
         return this.middleName;
     }
-    public String getLastname(){
+
+    @JsonProperty("lastname")
+    public String getLastname() {
         return this.lastName;    
     }
-    public String getGender(){
+
+    @JsonProperty("gender")
+    public String getGender() {
         return this.gender;
     }
-    public LocalDate getBorn(){
+
+    @JsonProperty("born")
+    public LocalDate getBorn() {
         return this.born;
     }
-    public String getPhone(){
+
+    @JsonProperty("phone")
+    public String getPhone() {
         return this.phoneNumber;
+    }
+
+    @JsonProperty("photo")
+    public String getPhoto() {
+        return this.photo;
+    }
+
+    @JsonProperty("role")
+    public String getUserRole() {
+        return role;
+    }
+
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
+    }
+
+    @JsonProperty("id")
+    public Integer getId() {
+        return id;
+    }
+
+    @JsonProperty("password")
+    @JsonIgnore
+    public String getPassword() {
+        return password;
     }
 
     @Override
