@@ -46,4 +46,4 @@ And generating the private key,
 openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in keypair.pem -out private.pem 
 ```
 
-And you can delete the keypair.pem
+And you can delete the keypair.pem, And moving the public key and private key to the /src/main/resources/certs folder.
