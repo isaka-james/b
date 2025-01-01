@@ -2,12 +2,13 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.4 (Debian 16.4-1.pgdg120+1)
--- Dumped by pg_dump version 16.4 (Debian 16.4-1)
+-- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -344,61 +345,24 @@ ALTER SEQUENCE public.notes_id_seq OWNED BY public.notes.id;
 
 
 --
--- Name: tasks; Type: TABLE; Schema: public; Owner: lifesupport
+-- Name: todos; Type: TABLE; Schema: public; Owner: lifesupport
 --
 
-CREATE TABLE public.tasks (
+CREATE TABLE public.todos (
     id integer NOT NULL,
     title character varying(255) NOT NULL,
     description text,
     due_date date,
     status character varying(50) DEFAULT 'pending'::character varying,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    user_id integer,
+    completed_at timestamp without time zone,
+    CONSTRAINT status_check CHECK (((status)::text = ANY ((ARRAY['completed'::character varying, 'pending'::character varying, 'cancelled'::character varying])::text[])))
 );
 
 
-ALTER TABLE public.tasks OWNER TO lifesupport;
-
---
--- Name: tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: lifesupport
---
-
-CREATE SEQUENCE public.tasks_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.tasks_id_seq OWNER TO lifesupport;
-
---
--- Name: tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lifesupport
---
-
-ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
-
-
---
--- Name: todo_items; Type: TABLE; Schema: public; Owner: lifesupport
---
-
-CREATE TABLE public.todo_items (
-    id integer NOT NULL,
-    task_id integer,
-    title character varying(255) NOT NULL,
-    description text,
-    due_date date,
-    status character varying(50) DEFAULT 'pending'::character varying,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE public.todo_items OWNER TO lifesupport;
+ALTER TABLE public.todos OWNER TO lifesupport;
 
 --
 -- Name: todo_items_id_seq; Type: SEQUENCE; Schema: public; Owner: lifesupport
@@ -419,7 +383,7 @@ ALTER SEQUENCE public.todo_items_id_seq OWNER TO lifesupport;
 -- Name: todo_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: lifesupport
 --
 
-ALTER SEQUENCE public.todo_items_id_seq OWNED BY public.todo_items.id;
+ALTER SEQUENCE public.todo_items_id_seq OWNED BY public.todos.id;
 
 
 --
@@ -472,17 +436,10 @@ ALTER TABLE ONLY public.notes ALTER COLUMN id SET DEFAULT nextval('public.notes_
 
 
 --
--- Name: tasks id; Type: DEFAULT; Schema: public; Owner: lifesupport
+-- Name: todos id; Type: DEFAULT; Schema: public; Owner: lifesupport
 --
 
-ALTER TABLE ONLY public.tasks ALTER COLUMN id SET DEFAULT nextval('public.tasks_id_seq'::regclass);
-
-
---
--- Name: todo_items id; Type: DEFAULT; Schema: public; Owner: lifesupport
---
-
-ALTER TABLE ONLY public.todo_items ALTER COLUMN id SET DEFAULT nextval('public.todo_items_id_seq'::regclass);
+ALTER TABLE ONLY public.todos ALTER COLUMN id SET DEFAULT nextval('public.todo_items_id_seq'::regclass);
 
 
 --
@@ -490,158 +447,6 @@ ALTER TABLE ONLY public.todo_items ALTER COLUMN id SET DEFAULT nextval('public.t
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.me_id_seq'::regclass);
-
-
---
--- Data for Name: behavior_logs; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.behavior_logs (id, behavior_id, log_date, notes, created_at) FROM stdin;
-\.
-
-
---
--- Data for Name: behaviors; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.behaviors (id, behavior, target_date, frequency, status, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: book_readings; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.book_readings (id, title, author, genre, start_date, finish_date, status, rating, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: contacts; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.contacts (id, name, phone, email, address, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: events; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.events (id, title, description, event_date, location, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: financials; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.financials (id, description, amount, transaction_date, category, type, created_at, updated_at, user_id) FROM stdin;
-1	blablabla	1000000.00	2024-09-10	food	expense	2024-09-10 20:18:56.192852	2024-09-10 20:18:56.192861	21
-\.
-
-
---
--- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.notes (id, title, content, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: tasks; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.tasks (id, title, description, due_date, status, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: todo_items; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.todo_items (id, task_id, title, description, due_date, status, created_at, updated_at) FROM stdin;
-\.
-
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: lifesupport
---
-
-COPY public.users (id, username, password, last_login, photo, born, first_name, middle_name, last_name, phone_number, role, email, gender, nida) FROM stdin;
-21	isaka	$2a$10$xoBdUiTCw51Ym8ZT4Y9goueqcJ8KYTbhX5lTgKdHDXQ0qGczQZPm2	\N	\N	2024-10-09	\N	\N	\N	\N	owner	\N	Male	\N
-\.
-
-
---
--- Name: behavior_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.behavior_logs_id_seq', 1, false);
-
-
---
--- Name: behaviors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.behaviors_id_seq', 1, false);
-
-
---
--- Name: book_readings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.book_readings_id_seq', 1, false);
-
-
---
--- Name: contacts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.contacts_id_seq', 1, false);
-
-
---
--- Name: events_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.events_id_seq', 1, false);
-
-
---
--- Name: financials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.financials_id_seq', 1, true);
-
-
---
--- Name: me_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.me_id_seq', 22, true);
-
-
---
--- Name: notes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.notes_id_seq', 1, false);
-
-
---
--- Name: tasks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.tasks_id_seq', 1, false);
-
-
---
--- Name: todo_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lifesupport
---
-
-SELECT pg_catalog.setval('public.todo_items_id_seq', 1, false);
 
 
 --
@@ -658,6 +463,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.financials
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: todos todos_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lifesupport
+--
+
+ALTER TABLE ONLY public.todos
+    ADD CONSTRAINT todos_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
