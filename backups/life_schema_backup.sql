@@ -358,7 +358,9 @@ CREATE TABLE public.todos (
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     user_id integer,
     completed_at timestamp without time zone,
-    CONSTRAINT status_check CHECK (((status)::text = ANY ((ARRAY['completed'::character varying, 'pending'::character varying, 'cancelled'::character varying])::text[])))
+    rating integer DEFAULT 1,
+    CONSTRAINT status_check CHECK (((status)::text = ANY ((ARRAY['completed'::character varying, 'pending'::character varying, 'cancelled'::character varying])::text[]))),
+    CONSTRAINT todos_rating_check CHECK (((rating >= 1) AND (rating <= 5)))
 );
 
 
