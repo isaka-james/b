@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.masterplan.behaviour.model.Todos;
 import com.masterplan.behaviour.model.User;
@@ -17,6 +18,7 @@ import com.masterplan.behaviour.repository.UserRepository;
 import com.masterplan.behaviour.response.APIResponse;
 import com.masterplan.behaviour.service.TokenService;
 
+@RestController
 public class TodosController {
     @Autowired
     private TokenService tokenService;
@@ -29,7 +31,7 @@ public class TodosController {
     private TodosRepository todosRepository;
 
     @PostMapping("/record-todos")
-    public ResponseEntity<APIResponse> recordTransaction(
+    public ResponseEntity<APIResponse> recordTodos(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody Todos todos) {
 
@@ -47,7 +49,7 @@ public class TodosController {
         // Create a Financial record
         Todos todosToSave = new Todos();
         todosToSave.setDescription(todos.getDescription());
-        todosToSave.setTitle(todos.getStatus());
+        todosToSave.setTitle(todos.getTitle());
         todosToSave.setStatus(todos.getStatus());
         todosToSave.setCompletedDate(todos.getCompletedDate());
         todosToSave.setRating(todos.getRating());
@@ -59,11 +61,11 @@ public class TodosController {
         // Save financial record
         todosRepository.save(todosToSave);
 
-        return ResponseEntity.ok(new APIResponse(200, "Transaction recorded successfully", todosToSave));
+        return ResponseEntity.ok(new APIResponse(200, "Todos recorded successfully", todosToSave));
     }
 
     @GetMapping("/get-todos")
-    public ResponseEntity<APIResponse> getBalance(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<APIResponse> getTodos(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String username = tokenService.getUsernameFromToken(token);
         Optional<User> userOptional = userRepository.findByUsername(username);
