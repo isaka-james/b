@@ -1,7 +1,5 @@
 package com.masterplan.behaviour.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -11,6 +9,9 @@ import org.springframework.data.relational.core.mapping.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Table("todos")
 public class Todos {
@@ -32,7 +33,18 @@ public class Todos {
 
     @Column("status")
     @NotNull(message = "Status is required")
-    private String status;
+    private String status="pending";
+    
+    @Column("category")
+    @NotNull(message = "Category is required")
+    private String category="personal";
+
+    @Column("stared")
+    private boolean stared=false;
+
+    @Column("target_at")
+    @JsonProperty("target_at")
+    private LocalDateTime targetAt;
 
     @Column("rating")
     @NotEmpty(message = "Rating is required")
@@ -51,7 +63,7 @@ public class Todos {
     public Todos() {}
 
     // Parameterized constructor
-    public Todos(Integer id, String description, String title, Integer userId, Integer rating, LocalDateTime completedDate, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Todos(Integer id, String description, String title, Integer userId, Integer rating, LocalDateTime completedDate, String status, LocalDateTime createdAt, LocalDateTime updatedAt,String category, boolean stared,LocalDateTime targetAt) {
         this.id = id;
         this.description = description;
         this.userId = userId;
@@ -61,6 +73,10 @@ public class Todos {
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.targetAt = targetAt;
+        this.category = category;
+        this.stared = stared;
+        
     }
 
     // Getters and setters
@@ -134,6 +150,30 @@ public class Todos {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getCategory(){
+	    return category;
+    }
+
+    public void setCategory(String category){
+	    this.category = category;
+    }
+
+    public boolean getStared(){
+	    return stared;
+    }
+
+    public void setStared(boolean stared){
+	    this.stared = stared;
+    }
+
+    public LocalDateTime getTargetAt(){
+	    return targetAt;
+    }
+
+    public void setTargetAt(LocalDateTime targetAt){
+	    this.targetAt = targetAt;
     }
 
     @Override
