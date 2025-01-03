@@ -38,8 +38,8 @@ public class Todos {
     @NotEmpty(message = "Rating is required")
     private Integer rating;
 
-    @Column("completed_date")
-    private LocalDateTime completedDate;
+    @Column("completed_at")
+    private LocalDateTime completedDate = null;
 
     @Column("created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
