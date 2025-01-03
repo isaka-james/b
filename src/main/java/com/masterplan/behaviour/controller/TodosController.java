@@ -1,6 +1,8 @@
 package com.masterplan.behaviour.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +79,11 @@ public class TodosController {
         }
         User user = userOptional.get();
 
-        Optional<Todos> todos = todosRepository.findByUserId(user.getId());
+        List<Todos> todos = todosRepository.findByUserId(user.getId());
+
+        if (todos.isEmpty()) {
+            return ResponseEntity.ok(new APIResponse(200, "No todos found for the user", Collections.emptyList()));
+        }
 
         return ResponseEntity.ok(new APIResponse(200, "Todos fetched successfully", todos));
     }
