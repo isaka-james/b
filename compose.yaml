@@ -7,4 +7,3 @@ services:
       - 'POSTGRES_USER=lifesupport'
     ports:
       - '5432:5432'
-

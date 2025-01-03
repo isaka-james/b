@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 public class AuthController {
@@ -52,6 +54,16 @@ public class AuthController {
             "Successfully Login!", 
             token
         );
+
+        String username = tokenService.getUsernameFromToken(token);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body(new APIResponse(400, "User not found", null));
+        }
+        User userLoged = userOptional.get();
+        userLoged.setLastLogin(LocalDateTime.now());
+        userRepository.save(userLoged);
+
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
