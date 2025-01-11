@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 @Table("todos")
 public class Todos {
 
@@ -24,7 +23,7 @@ public class Todos {
     @Size(max = 255, message = "Description cannot exceed 255 characters")
     private String description;
 
-    @Column("title") 
+    @Column("title")
     private String title;
 
     @Column("user_id")
@@ -33,14 +32,14 @@ public class Todos {
 
     @Column("status")
     @NotNull(message = "Status is required")
-    private String status="pending";
-    
+    private String status = "pending";
+
     @Column("category")
     @NotNull(message = "Category is required")
-    private String category="personal";
+    private String category = "personal";
 
     @Column("stared")
-    private boolean stared=false;
+    private boolean stared = false;
 
     @Column("target_at")
     @JsonProperty("target_at")
@@ -63,7 +62,9 @@ public class Todos {
     public Todos() {}
 
     // Parameterized constructor
-    public Todos(Integer id, String description, String title, Integer userId, Integer rating, LocalDateTime completedDate, String status, LocalDateTime createdAt, LocalDateTime updatedAt,String category, boolean stared,LocalDateTime targetAt) {
+    public Todos(Integer id, String description, String title, Integer userId, Integer rating, 
+                 LocalDateTime completedDate, String status, LocalDateTime createdAt, 
+                 LocalDateTime updatedAt, String category, boolean stared, LocalDateTime targetAt) {
         this.id = id;
         this.description = description;
         this.userId = userId;
@@ -76,7 +77,6 @@ public class Todos {
         this.targetAt = targetAt;
         this.category = category;
         this.stared = stared;
-        
     }
 
     // Getters and setters
@@ -152,28 +152,28 @@ public class Todos {
         this.userId = userId;
     }
 
-    public String getCategory(){
-	    return category;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategory(String category){
-	    this.category = category;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public boolean getStared(){
-	    return stared;
+    public boolean getStared() {
+        return stared;
     }
 
-    public void setStared(boolean stared){
-	    this.stared = stared;
+    public void setStared(boolean stared) {
+        this.stared = stared;
     }
 
-    public LocalDateTime getTargetAt(){
-	    return targetAt;
+    public LocalDateTime getTargetAt() {
+        return targetAt;
     }
 
-    public void setTargetAt(LocalDateTime targetAt){
-	    this.targetAt = targetAt;
+    public void setTargetAt(LocalDateTime targetAt) {
+        this.targetAt = targetAt;
     }
 
     @Override

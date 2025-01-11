@@ -28,7 +28,6 @@ public class TodosController {
     @Autowired
     private UserRepository userRepository;
 
-
     @Autowired
     private TodosRepository todosRepository;
 
@@ -53,15 +52,16 @@ public class TodosController {
         todosToSave.setDescription(todos.getDescription());
         todosToSave.setTitle(todos.getTitle());
         todosToSave.setStatus(todos.getStatus());
-	todosToSave.setCategory(todos.getCategory());
-	todosToSave.setStared(todos.getStared());
+        todosToSave.setCategory(todos.getCategory());
+        todosToSave.setStared(todos.getStared());
         todosToSave.setCompletedDate(todos.getCompletedDate());
         todosToSave.setRating(todos.getRating());
         todosToSave.setCreatedAt(LocalDateTime.now());
         todosToSave.setUpdatedAt(LocalDateTime.now());
-	todosToSave.setTargetAt(todos.getTargetAt());
+        todosToSave.setTargetAt(todos.getTargetAt());
         todosToSave.setUserId(user.getId());
-        //financial.setId(user.getId()); // When Id is not auto generated then it will be null, so it will be inserted as new record
+        // financial.setId(user.getId()); // When Id is not auto generated then it will
+        // be null, so it will be inserted as new record
 
         // Save financial record
         todosRepository.save(todosToSave);

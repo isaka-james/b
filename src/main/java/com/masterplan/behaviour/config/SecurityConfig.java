@@ -25,7 +25,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -46,7 +45,8 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public SecurityConfig(RsaKeyProperties rsaKeys, UserRepository userRepository, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+    public SecurityConfig(RsaKeyProperties rsaKeys, UserRepository userRepository,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.rsaKeys = rsaKeys;
         this.userRepository = userRepository;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
@@ -55,22 +55,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                    .csrf(csrf -> csrf.disable())
-                    .cors(withDefaults())
-                    .authorizeHttpRequests(auth ->auth
-                                .requestMatchers("/token","/register","/images/**").permitAll()
-                                .anyRequest()
-                                .authenticated()
-                    )
-                    .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                    )
-                    .oauth2ResourceServer ( oauth2 -> oauth2.jwt(Customizer.withDefaults()) )
-                    .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    )
-                    .httpBasic(withDefaults())
-                    .build();
+                .csrf(csrf -> csrf.disable())
+                .cors(withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/token", "/register", "/images/**").permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(withDefaults())
+                .build();
 
     }
 
@@ -85,14 +82,15 @@ public class SecurityConfig {
                     return org.springframework.security.core.userdetails.User.builder()
                             .username(user.getUsername())
                             .password(user.getPassword())
-                            .roles(user.getUserRole())  // Assuming the role is stored as a simple string
+                            .roles(user.getUserRole()) // Assuming the role is stored as a simple string
                             .build();
                 } else {
                     throw new UsernameNotFoundException("User not found with username: " + username);
                 }
             }
 
-            // Other methods can be implemented as no-op or throwing UnsupportedOperationException if not needed
+            // Other methods can be implemented as no-op or throwing
+            // UnsupportedOperationException if not needed
             @Override
             public void createUser(UserDetails user) {
                 throw new UnsupportedOperationException("Not implemented");
@@ -129,7 +127,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -150,12 +149,15 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwks);
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://192.168.1.2:4200")); // Allow only the Angular applications
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Include OPTIONS method
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://192.168.1.2:4200")); // Allow
+                                                                                                            // only the
+                                                                                                            // Angular
+                                                                                                            // applications
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Include OPTIONS
+                                                                                                   // method
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); // Allow credentials (e.g., cookies)
 

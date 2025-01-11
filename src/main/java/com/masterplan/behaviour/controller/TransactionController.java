@@ -23,7 +23,6 @@ public class TransactionController {
     @Autowired
     private UserRepository userRepository;
 
-
     @Autowired
     private FinancialRepository financialRepository;
 
@@ -53,7 +52,8 @@ public class TransactionController {
         financial.setCreatedAt(LocalDateTime.now());
         financial.setUpdatedAt(LocalDateTime.now());
         financial.setUserId(user.getId());
-        //financial.setId(user.getId()); // When Id is not auto generated then it will be null, so it will be inserted as new record
+        // financial.setId(user.getId()); // When Id is not auto generated then it will
+        // be null, so it will be inserted as new record
 
         // Save financial record
         financialRepository.save(financial);

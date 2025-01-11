@@ -23,37 +23,34 @@ import java.util.Optional;
 @RestController
 public class AuthController {
 
-    private static final Logger LOG=LoggerFactory.getLogger(AuthController.class);
-    
-    @Autowired 
+    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+
+    @Autowired
     private UserRepository userRepository;
 
-    @Autowired 
+    @Autowired
     private TokenService tokenService;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/token")
     public ResponseEntity<APIResponse> token(Authentication authentication) {
 
-        if(authentication==null){
+        if (authentication == null) {
             APIResponse response = new APIResponse(
-                HttpStatus.BAD_REQUEST.value(), 
-                "Username and Password are required Fields!", 
-                null
-            );
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Username and Password are required Fields!",
+                    null);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        
 
         String token = tokenService.generateToken(authentication);
         LOG.debug("Token Granted: {}", token);
         APIResponse response = new APIResponse(
-            HttpStatus.OK.value(), 
-            "Successfully Login!", 
-            token
-        );
+                HttpStatus.OK.value(),
+                "Successfully Login!",
+                token);
 
         String username = tokenService.getUsernameFromToken(token);
         Optional<User> userOptional = userRepository.findByUsername(username);
@@ -64,26 +61,43 @@ public class AuthController {
         userLoged.setLastLogin(LocalDateTime.now());
         userRepository.save(userLoged);
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<APIResponse>  registerUser(@RequestBody User user) {
+    public ResponseEntity<APIResponse> registerUser(@RequestBody User user) {
+
+        LOG.debug("The user: {}",user);
+
+        if (user == null) {
+            // Log an error or return an appropriate response if null
+            return new ResponseEntity<>(new APIResponse(HttpStatus.BAD_REQUEST.value(), "User data not received", null), HttpStatus.BAD_REQUEST);
+        }
+
+        if (user.getPassword() == null ) { //|| user.getUsername() == null
+            APIResponse responseError = new APIResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Password cannot be null", //and Username 
+                    user);
+            return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
+        }
+        
+        LOG.debug("The username: {} and Password: {} requesting to register", user.getUsername(), user.getPassword());
+
         // Check if the username already exists
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             APIResponse responseIsPresent = new APIResponse(
-                HttpStatus.CONFLICT.value(), 
-                "Username is already Present!", 
-                null
-            );
-            return new ResponseEntity<>(responseIsPresent,HttpStatus.CONFLICT);
+                    HttpStatus.CONFLICT.value(),
+                    "Username is already Present!",
+                    null);
+            return new ResponseEntity<>(responseIsPresent, HttpStatus.CONFLICT);
         }
 
-        // Encrypt the password
+        // Encrypt the password (ensure password is plain text here)
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Set the role (you can modify this depending on your needs)
-        user.setRole("owner");  // Default role
+        // Set other fields like role, first name, etc.
+        user.setRole("owner"); // Default role
         user.setFirstname(user.getFirstname());
         user.setLastname(user.getLastname());
         user.setBorn(user.getBorn());
@@ -93,11 +107,10 @@ public class AuthController {
         userRepository.save(user);
 
         APIResponse responseSuccessful = new APIResponse(
-            HttpStatus.OK.value(), 
-            "Username is successfully Created!", 
-            null
-        );
-        return new ResponseEntity<>(responseSuccessful,HttpStatus.OK);
+                HttpStatus.OK.value(),
+                "Account is successfully Created!",
+                null);
+        return new ResponseEntity<>(responseSuccessful, HttpStatus.OK);
     }
-    
+
 }
