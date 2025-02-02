@@ -33,6 +33,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -152,17 +153,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://192.168.1.2:4200")); // Allow
-                                                                                                            // only the
-                                                                                                            // Angular
-                                                                                                            // applications
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Include OPTIONS
-                                                                                                   // method
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
+        // Dynamically allow origins from the same network (192.168.*.*)
+        configuration.setAllowedOriginPatterns(List.of("http://192.168.*.*")); // Use patterns for dynamic matching
+
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Include OPTIONS method
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true); // Allow credentials (e.g., cookies)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+    
 }

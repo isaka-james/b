@@ -8,6 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,6 +36,7 @@ public class Financial {
 
     @Column("transaction_date")
     @NotNull(message = "Transaction date is required")
+    @JsonProperty("transaction_date")
     private LocalDate transactionDate;
 
     @Column("category")
