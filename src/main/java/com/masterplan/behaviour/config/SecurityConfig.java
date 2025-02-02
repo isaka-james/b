@@ -32,7 +32,6 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
