@@ -163,42 +163,34 @@ public class User {
         return this.lastName;    
     }
 
-    @JsonProperty("gender")
     public String getGender() {
         return this.gender;
     }
 
-    @JsonProperty("born")
     public LocalDate getBorn() {
         return this.born;
     }
 
-    @JsonProperty("phone")
     public String getPhone() {
         return this.phoneNumber;
     }
 
-    @JsonProperty("photo")
     public String getPhoto() {
         return this.photo;
     }
 
-    @JsonProperty("role")
     public String getUserRole() {
         return role;
     }
 
-    @JsonProperty("username")
     public String getUsername() {
         return username;
     }
 
-    @JsonProperty("id")
     public Integer getId() {
         return id;
     }
 
-    @JsonProperty("password")
     @JsonIgnore
     public String getPassword() {
         return password;
